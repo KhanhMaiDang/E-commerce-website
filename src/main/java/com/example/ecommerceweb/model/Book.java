@@ -3,8 +3,12 @@ package com.example.ecommerceweb.model;
 import com.sun.istack.NotNull;
 import lombok.*;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "books")
@@ -32,6 +36,5 @@ public class Book extends AuditModel{
     private Integer remaining;
     @Column
     private String imageUrl;
-
 
 }
