@@ -1,5 +1,6 @@
 package com.example.ecommerceweb.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sun.istack.NotNull;
 import lombok.*;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
@@ -29,6 +30,7 @@ public class Book extends AuditModel{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_book_category")
+    @JsonBackReference
     private Category category;
     @Column
     private Double price;

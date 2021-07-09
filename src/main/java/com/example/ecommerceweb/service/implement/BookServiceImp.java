@@ -9,6 +9,8 @@ import com.example.ecommerceweb.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BookServiceImp implements BookService {
     @Autowired
@@ -29,5 +31,10 @@ public class BookServiceImp implements BookService {
     @Override
     public Category createACategory(Category category) {
         return categoryRepository.save(category);
+    }
+
+    @Override
+    public List<Book> getAllBooks() {
+        return bookRepository.findAll();
     }
 }

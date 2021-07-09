@@ -10,4 +10,5 @@ public interface BookService {
    // public List<Book> getAllBooks();
     public Book saveABook(Long categoryId, Book book);
     public Category createACategory(Category category);
+    public List<Book> getAllBooks();
 }

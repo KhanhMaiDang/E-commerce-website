@@ -1,11 +1,16 @@
 package com.example.ecommerceweb.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Table(name = "category")
+@Getter
+@Setter
 public class Category extends AuditModel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
