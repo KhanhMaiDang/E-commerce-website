@@ -25,12 +25,11 @@ public class Book extends AuditModel{
     private String author;
     @Column(nullable = false)
     private String publisher;
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_book_category")
-    @JsonBackReference
     private Category category;
     @Column
     private Double price;
@@ -38,5 +37,14 @@ public class Book extends AuditModel{
     private Integer remaining;
     @Column
     private String imageUrl;
+
+//    public Book copyABook(Book book){
+//        this.id = book.id;
+//        this.name = book.name;
+//        this.author= book.author;
+//        this.publisher = book.publisher;
+//        this.description = book.description;
+//        this.category = book.category
+//    }
 
 }

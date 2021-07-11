@@ -1,5 +1,7 @@
 package com.example.ecommerceweb.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,11 +18,12 @@ public class Category extends AuditModel{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String name;
     private String description;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Book> books;
 
     public String getName() {
