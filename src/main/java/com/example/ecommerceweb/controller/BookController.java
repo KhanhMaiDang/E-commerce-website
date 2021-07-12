@@ -9,6 +9,7 @@ import com.example.ecommerceweb.service.BookService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,6 +24,13 @@ public class BookController {
     private BookService bookService;
     @Autowired
     private ModelMapper modelMapper;
+
+    @GetMapping("/admin/hello")
+    //@PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
+    public String helloWorld(){
+        return "Hello world";
+    }
 
     @PostMapping("/book")
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,6 +47,7 @@ public class BookController {
         return convertToDto(bookService.saveABook(book));
     }
 
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     @GetMapping("/books")
     @ResponseBody
     public List<BookDTO> getAllBooks(){

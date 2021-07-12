@@ -1,20 +1,20 @@
 package com.example.ecommerceweb.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
 @Getter @Setter
+@Data
 public class Role {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
     @Column(nullable = false, unique = true)
@@ -23,6 +23,9 @@ public class Role {
     @ManyToMany(mappedBy = "roles")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private List<User> users;
+    private Set<User> users = new HashSet<>();
 
+//    public Role(String roleName) {
+//        this.name = roleName;
+//    }
 }

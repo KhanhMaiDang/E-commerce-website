@@ -2,24 +2,28 @@ package com.example.ecommerceweb.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @AllArgsConstructor
+@Slf4j
 public class CustomUserDetail implements UserDetails {
 
     private User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<Role> roles = user.getRoles();
+        Set<Role> roles = new HashSet<>();
+        for (Role role : roles = user.getRoles()) {
+            System.out.println(role);
+        }
+
+       // System.out.println(roles);
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         for (Role role:roles){
             authorities.add(new SimpleGrantedAuthority(role.getName()));
