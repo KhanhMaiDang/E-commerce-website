@@ -20,10 +20,10 @@ public class Role {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private Set<User> users = new HashSet<>();
+//    @ManyToMany(mappedBy = "roles")
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    private Set<User> users = new HashSet<>();
 
 //    public Role(String roleName) {
 //        this.name = roleName;
