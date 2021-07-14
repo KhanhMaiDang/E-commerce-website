@@ -27,12 +27,12 @@ public class BookController {
 
     @GetMapping("/admin/hello")
     //@PreAuthorize("hasAuthority('USER')")
-    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
+    //@PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     public String helloWorld(){
         return "Hello world";
     }
 
-    @PostMapping("/book")
+    @PostMapping("/admin/book")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public BookDTO createBook(@Valid @RequestBody BookDTO bookDto) throws ParseException {
@@ -47,15 +47,15 @@ public class BookController {
         return convertToDto(bookService.saveABook(book));
     }
 
-    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
-    @GetMapping("/books")
+  //  @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
+    @GetMapping("/public/books")
     @ResponseBody
     public List<BookDTO> getAllBooks(){
         List<Book> books = bookService.getAllBooks();
         return books.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    @GetMapping("/books/{id}")
+    @GetMapping("/public/books/{id}")
     public BookDTO getBookById(@PathVariable Long id){
         Book book = bookService.getBookById(id);
         if(book!=null)
@@ -64,7 +64,7 @@ public class BookController {
             throw new BookException(id);
     }
 
-    @PutMapping("/books/{id}")
+    @PutMapping("/admin/books/{id}")
     public Book updateABook(@Valid @PathVariable(value = "id") Long id, @RequestBody BookDTO bookDto) throws ParseException {
         Category category = bookService.getCategoryByName(bookDto.getCategory());
         System.out.println(category);
@@ -78,7 +78,7 @@ public class BookController {
         }
     }
 
-    @DeleteMapping("books/{id}")
+    @DeleteMapping("/admin/books/{id}")
     public String deleteABook(@Valid @PathVariable(value = "id") Long id){
        if(bookService.deleteBookById(id))
            return "Delete succesfully";

@@ -13,12 +13,14 @@ import java.util.logging.ErrorManager;
 @Slf4j
 public class JwtTokenProvider {
     private final String JWT_SECRET = "secret";
-    private final long JWT_EXPIRATION = 604800000L;
+    private final long JWT_EXPIRATION = (long) 1.8e+6;
 
     public String generateToken(CustomUserDetail userDetail){
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
-        return Jwts.builder().setSubject(Long.toString(userDetail.getUser().getId()))
+        //return Jwts.builder().setSubject(Long.toString(userDetail.getUser().getId()))
+        System.out.println("getUsername"+userDetail.getUsername());
+        return Jwts.builder().setSubject(userDetail.getUsername())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)

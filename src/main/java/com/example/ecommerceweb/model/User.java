@@ -31,5 +31,16 @@ public class User {
     public void addRole(Role role) {
         roles.add(role);
     }
+    public User(String username, String name, Long phoneNumber, String password) {
+        this.username = username;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+    }
+
+    public User(){
+
+    }
+
 
 }

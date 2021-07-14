@@ -14,7 +14,7 @@ public class CategoryController {
     @Autowired
     private BookService bookService;
 
-    @PostMapping("/categories")
+    @PostMapping("/public/categories")
     public Category createACategory(@RequestBody Category category){
         return bookService.createACategory(category);
     }
