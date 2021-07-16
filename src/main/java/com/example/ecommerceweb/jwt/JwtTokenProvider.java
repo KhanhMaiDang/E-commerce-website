@@ -13,7 +13,8 @@ import java.util.logging.ErrorManager;
 @Slf4j
 public class JwtTokenProvider {
     private final String JWT_SECRET = "secret";
-    private final long JWT_EXPIRATION = (long) 1.8e+6;
+   // private final long JWT_EXPIRATION = (long) 1.8e+6;
+   private final long JWT_EXPIRATION = 9999999999L;
 
     public String generateToken(CustomUserDetail userDetail){
         Date now = new Date();

@@ -37,8 +37,6 @@ public class BookController {
     @ResponseBody
     public BookDTO createBook(@Valid @RequestBody BookDTO bookDto) throws ParseException {
         Book book = this.convertToEntity(bookDto);
-//        System.out.println(bookDto.getCategory());
-//        System.out.println(bookService.getCategoryByName(bookDto.getCategory()));
         Category category = bookService.getCategoryByName(bookDto.getCategory());
         if(category!=null)
              book.setCategory(bookService.getCategoryByName(bookDto.getCategory()));
@@ -47,7 +45,19 @@ public class BookController {
         return convertToDto(bookService.saveABook(book));
     }
 
-  //  @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
+    @PostMapping("/admin/categories/{catId}/book")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public BookDTO createBookInACategory(@Valid @RequestBody BookDTO bookDto, @PathVariable(value = "catId") Long id) throws ParseException {
+        Book book = this.convertToEntity(bookDto);
+        Category category = bookService.getCategoryById(id);
+        if(category!=null)
+            book.setCategory(category);
+        else
+            throw new CategoryNotFoundException(bookDto.getCategory());
+        return convertToDto(bookService.saveABook(id,book));
+    }
+
     @GetMapping("/public/books")
     @ResponseBody
     public List<BookDTO> getAllBooks(){
@@ -58,10 +68,17 @@ public class BookController {
     @GetMapping("/public/books/{id}")
     public BookDTO getBookById(@PathVariable Long id){
         Book book = bookService.getBookById(id);
+        System.out.println("BC "+book);
         if(book!=null)
             return convertToDto(book);
         else
             throw new BookException(id);
+    }
+
+    @GetMapping("/public/categories/{catId}/books")
+    public List<BookDTO> getBooksByCategory(@Valid @PathVariable(value = "catId") Long id){
+        List<Book> books = bookService.getBooksByCategory(id);
+        return books.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @PutMapping("/admin/books/{id}")

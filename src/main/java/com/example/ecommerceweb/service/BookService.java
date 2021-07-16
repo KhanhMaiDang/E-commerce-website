@@ -2,6 +2,7 @@ package com.example.ecommerceweb.service;
 
 import com.example.ecommerceweb.model.Book;
 import com.example.ecommerceweb.model.Category;
+import com.example.ecommerceweb.model.Rating;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,10 +17,14 @@ public interface BookService {
     public Book getBookById(Long id);
     public Book getBookByName(String name);
     public Book getBookByAuthor(String author);
-    //public Book getBookByCategory();
+    public List<Book> getBooksByCategory(Long categoryId);
     public Category getCategoryByName(String name); // return null if the category not found
     public Book updateABook(Long id, Book book);
     public boolean deleteBookById(Long id);
-
+    public List<Category> getAllCategories();
+    public Category updateACategory(Long id, Category newCategory);
+    public boolean deleteCategoryById(Long id);
+    //public List<Rating> getAllRatingOfABook(Long bookId);
+    public Book updateAvgRating(Long bookId, Float avgRating);
 
 }

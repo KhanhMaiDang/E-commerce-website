@@ -20,6 +20,9 @@ import java.util.Date;
         allowGetters = true
 )
 public class BookDTO {
+
+    private Long id;
+
     @NotNull
     private String name;
     @NotNull
@@ -29,6 +32,7 @@ public class BookDTO {
 
     private String description;
 
+    @NotNull
     private String category;
     @NotNull
     private Double price;
@@ -40,5 +44,7 @@ public class BookDTO {
     private Date createdAt;
 
     private Date updatedAt;
+
+    private Float avgRating;
 
 }

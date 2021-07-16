@@ -112,4 +112,44 @@ public class BookServiceImp implements BookService {
         }
 
     }
+
+    @Override
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
+    }
+
+    @Override
+    public Category updateACategory(Long id, Category newCategory) {
+        return categoryRepository.findById(id).map(category -> {
+            category.setName(newCategory.getName());
+            category.setDescription(newCategory.getDescription());
+            return categoryRepository.save(category);
+        }).orElseThrow(()->new CategoryNotFoundException(id));
+    }
+
+    @Override
+    public boolean deleteCategoryById(Long id) {
+        Optional<Category> category = categoryRepository.findById(id);
+        if(category.isPresent()){
+            categoryRepository.deleteById(id);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    @Override
+    public List<Book> getBooksByCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new CategoryNotFoundException(categoryId));
+        return category.getBooks();
+    }
+
+    @Override
+    public Book updateAvgRating(Long bookId, Float avgRating) {
+        return bookRepository.findById(bookId).map(book -> {
+            book.setAvgRating(avgRating);
+            return bookRepository.save(book);
+        }).orElseThrow(()->new BookException(bookId));
+    }
 }
