@@ -2,13 +2,17 @@ package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.DTO.BookDTO;
 import com.example.ecommerceweb.DTO.RatingDTO;
+import com.example.ecommerceweb.exception.CategoryNotFoundException;
+import com.example.ecommerceweb.exception.NoMatchUserException;
 import com.example.ecommerceweb.model.Book;
+import com.example.ecommerceweb.model.Category;
 import com.example.ecommerceweb.model.Rating;
 import com.example.ecommerceweb.service.BookService;
 import com.example.ecommerceweb.service.RatingService;
 import com.example.ecommerceweb.service.UserAccountService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -57,6 +61,19 @@ public class RatingController {
     @GetMapping("/public/ratings/{ratingId}")
     public RatingDTO getRatingById(@Valid @PathVariable(value = "ratingId") Long id){
         return convertToDto(ratingService.getRatingById(id));
+    }
+
+    @PutMapping("/user/ratings/{ratingId}/edit")
+    public RatingDTO updateARating(@Valid @PathVariable(value = "ratingId") Long id, @RequestBody RatingDTO ratingDTO) throws ParseException {
+        return convertToDto(ratingService.updateARating(id,convertToEntity(ratingDTO)));
+    }
+
+    @DeleteMapping("/admin/ratings/{ratingId}/delete")
+    public String deleteARating(@Valid @PathVariable(value = "ratingId") Long id) throws NoMatchUserException {
+        if(ratingService.deleteARating(id))
+            return "Delete successfully";
+        else
+            return "Can not delete";
     }
 
     private RatingDTO convertToDto(Rating rating){

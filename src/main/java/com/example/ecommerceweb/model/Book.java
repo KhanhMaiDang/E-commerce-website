@@ -37,8 +37,10 @@ public class Book extends AuditModel{
     private Double price;
     @Column
     private Integer remaining;
-    @Column
-    private String imageUrl;
+
+    @Lob
+    @Column(name="image",columnDefinition = "BLOB")
+    private byte[] image;
 
     private Float avgRating;
 

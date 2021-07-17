@@ -106,6 +106,9 @@ public class BookController {
     private BookDTO convertToDto(Book book){
         BookDTO bookDTO = modelMapper.map(book, BookDTO.class);
         bookDTO.setCategory(book.getCategory().getName());
+        if(book.getAvgRating() == null){
+            bookDTO.setAvgRating(0F);
+        }
         return bookDTO;
     }
 

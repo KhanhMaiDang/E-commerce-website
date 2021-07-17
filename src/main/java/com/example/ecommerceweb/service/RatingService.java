@@ -12,4 +12,6 @@ public interface RatingService {
     public List<Rating> getAllRatingsOfABook(Long bookId);
     public List<Rating> getUserRatingHistory();
     public Rating getRatingById(Long id);
+    public Rating updateARating(Long id, Rating newRating);
+    public boolean deleteARating(Long id);
 }

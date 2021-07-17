@@ -1,10 +1,8 @@
 package com.example.ecommerceweb.service.implement;
 
+import com.example.ecommerceweb.exception.NoMatchUserException;
 import com.example.ecommerceweb.exception.RatingNotFoundException;
-import com.example.ecommerceweb.model.Book;
-import com.example.ecommerceweb.model.CustomUserDetail;
-import com.example.ecommerceweb.model.Rating;
-import com.example.ecommerceweb.model.User;
+import com.example.ecommerceweb.model.*;
 import com.example.ecommerceweb.repository.RatingRepository;
 import com.example.ecommerceweb.service.BookService;
 import com.example.ecommerceweb.service.RatingService;
@@ -32,13 +30,15 @@ public class RatingServiceImpl implements RatingService {
         Book book = bookService.getBookById(bookId);
         newRating.setBook(book);
 
+        Rating rt = ratingRepository.save(newRating);
+
         float newAvgRating = 0;
         if ( ratingRepository.existsByBook(book)){
             newAvgRating = ratingRepository.calcAvgRating(bookId);
             System.out.println("RATING "+ newAvgRating);
         }
         bookService.updateAvgRating(bookId,newAvgRating);
-        return ratingRepository.save(newRating);
+        return rt;
     }
 
     public List<Rating> getAllRatingsOfABook(Long bookId){
@@ -65,5 +65,28 @@ public class RatingServiceImpl implements RatingService {
         else
             throw new RatingNotFoundException(id);
 
+    }
+
+    public Rating updateARating(Long id, Rating newRating){
+        return ratingRepository.findById(id).map(rating -> {
+            rating.setStar(newRating.getStar());
+            Rating rt = ratingRepository.save(rating);
+            Float newAvgRating = ratingRepository.calcAvgRating(rating.getBook().getId());
+            bookService.updateAvgRating(rating.getBook().getId(),newAvgRating);
+            return rt;
+        }).orElseThrow(()->new RatingNotFoundException(id));
+    }
+
+    public boolean deleteARating(Long id){
+
+        Optional<Rating> rating = ratingRepository.findById(id);
+        if (rating.isPresent()) {
+            System.out.println("RAt "+id);
+            ratingRepository.deleteById(id);
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
