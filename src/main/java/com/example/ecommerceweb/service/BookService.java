@@ -26,5 +26,6 @@ public interface BookService {
     public boolean deleteCategoryById(Long id);
     //public List<Rating> getAllRatingOfABook(Long bookId);
     public Book updateAvgRating(Long bookId, Float avgRating);
+    public List<Rating> getAllRatingsOfABook(Long bookId);
 
 }

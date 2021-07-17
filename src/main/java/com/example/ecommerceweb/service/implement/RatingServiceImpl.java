@@ -1,5 +1,6 @@
 package com.example.ecommerceweb.service.implement;
 
+import com.example.ecommerceweb.exception.RatingNotFoundException;
 import com.example.ecommerceweb.model.Book;
 import com.example.ecommerceweb.model.CustomUserDetail;
 import com.example.ecommerceweb.model.Rating;
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RatingServiceImpl implements RatingService {
@@ -35,5 +39,31 @@ public class RatingServiceImpl implements RatingService {
         }
         bookService.updateAvgRating(bookId,newAvgRating);
         return ratingRepository.save(newRating);
+    }
+
+    public List<Rating> getAllRatingsOfABook(Long bookId){
+        return bookService.getAllRatingsOfABook(bookId);
+    }
+
+    public List<Rating> getAllRatings(){
+        return ratingRepository.findAll();
+    }
+
+    public List<Rating> getUserRatingHistory(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail customUserDetail = ((CustomUserDetail)auth.getPrincipal());
+        User currentUser = customUserDetail.getUser();
+
+        return currentUser.getMyRatings();
+    }
+
+    public Rating getRatingById(Long id){
+        Optional<Rating> rating = ratingRepository.findById(id);
+        if(rating.isPresent()){
+            return rating.get();
+        }
+        else
+            throw new RatingNotFoundException(id);
+
     }
 }

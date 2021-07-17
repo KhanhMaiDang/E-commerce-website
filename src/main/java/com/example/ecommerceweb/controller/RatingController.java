@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.text.ParseException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/bookstore")
@@ -34,6 +36,29 @@ public class RatingController {
         return convertToDto(ratingService.addRating(id,rating));
     }
 
+    @GetMapping("/public/books/{bookId}/ratings")
+    public List<RatingDTO> getAllRatingOfABook(@Valid @PathVariable(value = "bookId") Long bookId){
+        List<Rating> ratings = ratingService.getAllRatingsOfABook(bookId);
+        return ratings.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    @GetMapping("/public/ratings")
+    public List<RatingDTO> getAllRatingHistory(){
+        List<Rating> ratings = ratingService.getAllRatings();
+        return ratings.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    @GetMapping("/user/ratings")
+    public List<RatingDTO> getUserRatingHistory(){
+        List<Rating> ratings = ratingService.getUserRatingHistory();
+        return ratings.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    @GetMapping("/public/ratings/{ratingId}")
+    public RatingDTO getRatingById(@Valid @PathVariable(value = "ratingId") Long id){
+        return convertToDto(ratingService.getRatingById(id));
+    }
+
     private RatingDTO convertToDto(Rating rating){
         RatingDTO ratingDTO = modelMapper.map(rating, RatingDTO.class);
         ratingDTO.setBookName(rating.getBook().getName());
@@ -45,8 +70,11 @@ public class RatingController {
 
     private Rating convertToEntity(RatingDTO ratingDTO) throws ParseException {
        Rating rating = modelMapper.map(ratingDTO, Rating.class);
+       if(ratingDTO.getBookId() != null && ratingDTO.getUsername() !=null){
         rating.setBook(bookService.getBookById(ratingDTO.getBookId()));
         rating.setUser(userAccountService.getUserByUsername(ratingDTO.getUsername()));
+       }
         return rating;
+
     }
 }

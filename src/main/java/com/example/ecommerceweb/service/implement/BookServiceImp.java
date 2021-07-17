@@ -4,6 +4,7 @@ import com.example.ecommerceweb.exception.BookException;
 import com.example.ecommerceweb.exception.CategoryNotFoundException;
 import com.example.ecommerceweb.model.Book;
 import com.example.ecommerceweb.model.Category;
+import com.example.ecommerceweb.model.Rating;
 import com.example.ecommerceweb.repository.BookCategoryRepository;
 import com.example.ecommerceweb.repository.BookRepository;
 import com.example.ecommerceweb.service.BookService;
@@ -151,5 +152,10 @@ public class BookServiceImp implements BookService {
             book.setAvgRating(avgRating);
             return bookRepository.save(book);
         }).orElseThrow(()->new BookException(bookId));
+    }
+
+    public List<Rating> getAllRatingsOfABook(Long bookId){
+        Book book = getBookById(bookId);
+        return book.getRatings();
     }
 }

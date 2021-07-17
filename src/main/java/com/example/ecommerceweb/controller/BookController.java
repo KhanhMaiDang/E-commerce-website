@@ -81,7 +81,7 @@ public class BookController {
         return books.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    @PutMapping("/admin/books/{id}")
+    @PutMapping("/admin/books/{id}/edit")
     public Book updateABook(@Valid @PathVariable(value = "id") Long id, @RequestBody BookDTO bookDto) throws ParseException {
         Category category = bookService.getCategoryByName(bookDto.getCategory());
         System.out.println(category);
