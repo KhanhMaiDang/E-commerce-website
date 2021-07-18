@@ -38,8 +38,9 @@ public class Book extends AuditModel{
     @Column
     private Integer remaining;
 
-    @Lob
-    @Column(name="image",columnDefinition = "BLOB")
+    //@Lob
+//    @Basic(fetch = FetchType.LAZY)
+//    @Column(name="image",columnDefinition = "bytea")
     private byte[] image;
 
     private Float avgRating;

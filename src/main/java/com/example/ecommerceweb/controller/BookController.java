@@ -2,23 +2,30 @@ package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.DTO.BookDTO;
 import com.example.ecommerceweb.exception.BookException;
+import com.example.ecommerceweb.exception.CanNotUploadImageException;
 import com.example.ecommerceweb.exception.CategoryNotFoundException;
 import com.example.ecommerceweb.model.Book;
 import com.example.ecommerceweb.model.Category;
 import com.example.ecommerceweb.service.BookService;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.text.ParseException;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/bookstore")
+@Slf4j
 public class BookController {
     @Autowired
     private BookService bookService;
@@ -31,6 +38,43 @@ public class BookController {
     public String helloWorld(){
         return "Hello world";
     }
+
+    @PostMapping("/admin/{bookId}/upImage")
+    public ResponseEntity<String> uploadImage( @Valid @PathVariable(value = "bookId") Long id, @RequestParam("file")MultipartFile file){
+        try{
+            byte[] image = file.getBytes();
+            Book book = bookService.getBookById(id);
+            book.setImage(image);
+            bookService.updateABook(id,book);
+
+        }
+        catch (Exception e){
+            log.error("ERROR",e);
+            throw new CanNotUploadImageException();
+        }
+        return new ResponseEntity<>("Upload successfully!", HttpStatus.OK);
+    }
+
+    @GetMapping("/public/{bookId}/image")
+    public String getImages(@PathVariable(value = "bookId") Long id, Model model) {
+        try {
+            log.info("Id= " + id);
+            Book book = bookService.getBookById(id);
+            model.addAttribute("id", book.getId());
+            model.addAttribute("name", book.getName());
+            byte[] encode = java.util.Base64.getEncoder().encode(book.getImage());
+//            System.out.println("encode"+encode);
+          String encodeString = Base64.getEncoder().encodeToString(book.getImage());
+//            System.out.println("STring "+encodeString);
+            model.addAttribute("image", encodeString);
+            return "imageDetails";
+        } catch (Exception e) {
+            log.error("Error", e);
+            model.addAttribute("message", "Error in getting image");
+            return "redirect:/";
+        }
+    }
+
 
     @PostMapping("/admin/book")
     @ResponseStatus(HttpStatus.CREATED)

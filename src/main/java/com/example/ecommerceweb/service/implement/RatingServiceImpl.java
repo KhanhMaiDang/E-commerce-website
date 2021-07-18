@@ -11,10 +11,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class RatingServiceImpl implements RatingService {
     @Autowired
     private RatingRepository ratingRepository;
@@ -45,6 +47,7 @@ public class RatingServiceImpl implements RatingService {
         return bookService.getAllRatingsOfABook(bookId);
     }
 
+    @Transactional
     public List<Rating> getAllRatings(){
         return ratingRepository.findAll();
     }

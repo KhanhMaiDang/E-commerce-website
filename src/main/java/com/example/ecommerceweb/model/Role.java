@@ -1,5 +1,6 @@
 package com.example.ecommerceweb.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Table(name = "roles")
 @Getter @Setter
 @Data
+@NoArgsConstructor
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,12 +22,13 @@ public class Role {
     @Column(nullable = false, unique = true)
     private String name;
 
-//    @ManyToMany(mappedBy = "roles")
-//    @EqualsAndHashCode.Exclude
-//    @ToString.Exclude
-//    private Set<User> users = new HashSet<>();
+    @ManyToMany(mappedBy = "roles")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<User> users = new HashSet<>();
 
-//    public Role(String roleName) {
-//        this.name = roleName;
-//    }
+    public Role(String roleName) {
+        this.name = roleName;
+    }
 }

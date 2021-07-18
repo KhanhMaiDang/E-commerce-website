@@ -16,6 +16,7 @@ public class Rating extends AuditModel{
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    //@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_rating_book")
     private Book book;
 

@@ -5,8 +5,10 @@ import com.example.ecommerceweb.model.Rating;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
+@Transactional
 public interface RatingRepository extends JpaRepository<Rating, Long> {
 
     @Query("select avg(star) from Rating where book.id= ?1")

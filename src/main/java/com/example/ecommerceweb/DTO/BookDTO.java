@@ -39,7 +39,7 @@ public class BookDTO {
     @NotNull
     private Integer remaining;
 
-    private String imageUrl;
+    //private String imageUrl;
 
     private Date createdAt;
 

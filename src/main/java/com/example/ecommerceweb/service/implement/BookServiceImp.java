@@ -96,7 +96,7 @@ public class BookServiceImp implements BookService {
             book2.setPublisher(book.getPublisher());
             book2.setPrice(book.getPrice());
             book2.setRemaining(book.getRemaining());
-            book2.setImageUrl(book.getImageUrl());
+            book2.setImage(book.getImage());
             return bookRepository.save(book2);
         }).orElseThrow(() -> new BookException(id));
     }
