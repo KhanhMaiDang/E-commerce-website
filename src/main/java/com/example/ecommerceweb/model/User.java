@@ -47,5 +47,10 @@ public class User {
 
     }
 
+    public void deleteAllRoles(){
+        for (Role r: roles){
+            roles.remove(r);
+        }
+    }
 
 }

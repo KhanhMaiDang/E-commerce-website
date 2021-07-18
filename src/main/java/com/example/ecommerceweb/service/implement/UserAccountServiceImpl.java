@@ -1,5 +1,6 @@
 package com.example.ecommerceweb.service.implement;
 
+import com.example.ecommerceweb.exception.UserAccountNotFoundException;
 import com.example.ecommerceweb.model.Book;
 import com.example.ecommerceweb.model.Role;
 import com.example.ecommerceweb.model.User;
@@ -43,4 +44,17 @@ public class UserAccountServiceImpl implements UserAccountService {
         Role userRole = roleRepository.findRoleByName("USER");
         return userRole.getUsers();
     }
+
+    @Override
+    public boolean deleteAnAccount(Long accId) {
+        Optional<User> tmpAcc = userRepository.findById(accId);
+        if (tmpAcc.isPresent()) {
+            User account = tmpAcc.get();
+            account.deleteAllRoles();
+            userRepository.deleteById(accId);
+            return true;
+        } else
+            return false;
+    }
+
 }

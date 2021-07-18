@@ -2,15 +2,14 @@ package com.example.ecommerceweb.controller;
 
 import com.example.ecommerceweb.DTO.BookDTO;
 import com.example.ecommerceweb.DTO.UserDTO;
+import com.example.ecommerceweb.exception.CanNotDeleteObjectException;
 import com.example.ecommerceweb.model.Book;
 import com.example.ecommerceweb.model.User;
 import com.example.ecommerceweb.service.UserAccountService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.text.ParseException;
@@ -45,6 +44,14 @@ public class UserController {
     @GetMapping("/admin/accounts/{id}")
     public UserDTO getAccountById(@Valid @PathVariable(value = "id")Long id){
         return convertToDto(userAccountService.getAccountById(id));
+    }
+
+    @DeleteMapping("admin/{accountId}/delete")
+    public ResponseEntity<String> deleteAnAccount(@Valid @PathVariable(value = "accountId") Long id){
+        if(!userAccountService.deleteAnAccount(id)){
+            throw new CanNotDeleteObjectException();
+        }
+        return ResponseEntity.ok("Delete successfully!");
     }
 
     private UserDTO convertToDto(User user){
