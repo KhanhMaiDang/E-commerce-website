@@ -3,6 +3,7 @@ package com.example.ecommerceweb.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @Table(name = "category")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Category extends AuditModel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +27,10 @@ public class Category extends AuditModel{
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Book> books;
+
+    public Category(String name){
+        this.name = name;
+    }
 
     public String getName() {
         return name;

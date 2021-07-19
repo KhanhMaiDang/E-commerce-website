@@ -7,6 +7,7 @@ import com.example.ecommerceweb.model.Book;
 import com.example.ecommerceweb.model.Category;
 import com.example.ecommerceweb.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,6 +22,8 @@ public class CategoryController {
     private BookService bookService;
 
     @PostMapping("/admin/category")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
     public Category createACategory(@RequestBody Category category){
         return bookService.createACategory(category);
     }
@@ -47,7 +50,7 @@ public class CategoryController {
     @DeleteMapping("/admin/categories/{id}")
     public String deleteACategory(@Valid @PathVariable(value = "id") Long id){
         if(bookService.deleteCategoryById(id))
-            return "Delete succesfully";
+            return "Delete successfully";
         else
             return "Can not delete";
     }
