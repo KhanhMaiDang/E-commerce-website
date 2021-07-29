@@ -20,7 +20,7 @@ public class SignUpRequest {
     @Size(max = 50)
     private String name;
 
-    private Long phoneNumber;
+    private String phoneNumber;
 
     private String email;
 

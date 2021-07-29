@@ -21,7 +21,7 @@ public class User {
     @Column(nullable = false)
     private String password;
     private String name;
-    private Long phoneNumber;
+    private String phoneNumber;
     private String email;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -37,7 +37,7 @@ public class User {
     public void addRole(Role role) {
         roles.add(role);
     }
-    public User(String username, String name, Long phoneNumber, String password, String email) {
+    public User(String username, String name, String phoneNumber, String password, String email) {
         this.username = username;
         this.name = name;
         this.phoneNumber = phoneNumber;
