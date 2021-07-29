@@ -27,6 +27,7 @@ public class RatingServiceImpl implements RatingService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetail customUserDetail = ((CustomUserDetail)auth.getPrincipal());
         User currentUser = customUserDetail.getUser();
+
         newRating.setUser(currentUser);
 
         Book book = bookService.getBookById(bookId);
@@ -91,5 +92,9 @@ public class RatingServiceImpl implements RatingService {
         else {
             return false;
         }
+    }
+
+    public Float calcAvgRating(Long bookId){
+        return ratingRepository.calcAvgRating(bookId);
     }
 }

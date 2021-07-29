@@ -43,7 +43,13 @@ public class Book extends AuditModel{
 //    @Column(name="image",columnDefinition = "bytea")
     private byte[] image;
 
-    private Float avgRating;
+    @PrePersist
+    public void prePersist() {
+        if(avgRating == null) //We set default value in case if the value is not set yet.
+            avgRating = 0F;
+    }
+    @Column(columnDefinition = "float4 default 0",nullable = false)
+    private Float avgRating = 0F;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "book", cascade = CascadeType.ALL)
     @JsonIgnore

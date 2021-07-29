@@ -6,7 +6,10 @@ import com.example.ecommerceweb.exception.CanNotUploadImageException;
 import com.example.ecommerceweb.exception.CategoryNotFoundException;
 import com.example.ecommerceweb.model.Book;
 import com.example.ecommerceweb.model.Category;
+import com.example.ecommerceweb.model.Rating;
+import com.example.ecommerceweb.payload.response.MessageResponse;
 import com.example.ecommerceweb.service.BookService;
+import com.example.ecommerceweb.service.RatingService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/bookstore")
 @Slf4j
@@ -31,6 +35,8 @@ public class BookController {
     private BookService bookService;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private RatingService ratingService;
 
     @GetMapping("/admin/hello")
     //@PreAuthorize("hasAuthority('USER')")
@@ -79,14 +85,15 @@ public class BookController {
     @PostMapping("/admin/book")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public BookDTO createBook(@Valid @RequestBody BookDTO bookDto) throws ParseException {
+    public ResponseEntity<?> createBook(@Valid @RequestBody BookDTO bookDto) throws ParseException {
         Book book = this.convertToEntity(bookDto);
         Category category = bookService.getCategoryByName(bookDto.getCategory());
         if(category!=null)
              book.setCategory(bookService.getCategoryByName(bookDto.getCategory()));
         else
-            throw new CategoryNotFoundException(bookDto.getCategory());
-        return convertToDto(bookService.saveABook(book));
+            //throw new CategoryNotFoundException(bookDto.getCategory());
+            return ResponseEntity.internalServerError().body(new MessageResponse("Category not found"));
+        return ResponseEntity.ok(convertToDto(bookService.saveABook(book)));
     }
 
     @PostMapping("/admin/categories/{catId}/book")
@@ -126,16 +133,16 @@ public class BookController {
     }
 
     @PutMapping("/admin/books/{id}/edit")
-    public Book updateABook(@Valid @PathVariable(value = "id") Long id, @RequestBody BookDTO bookDto) throws ParseException {
+    public ResponseEntity<?>  updateABook(@Valid @PathVariable(value = "id") Long id, @RequestBody BookDTO bookDto) throws ParseException {
         Category category = bookService.getCategoryByName(bookDto.getCategory());
         System.out.println(category);
         if(category!=null) {
             Book book = this.convertToEntity(bookDto);
             book.setCategory(bookService.getCategoryByName(bookDto.getCategory()));
-            return bookService.updateABook(id,book);
+            return ResponseEntity.ok(convertToDto(bookService.updateABook(id,book)));
         }
         else {
-            throw new CategoryNotFoundException(bookDto.getCategory());
+            return ResponseEntity.internalServerError().body(new MessageResponse("Category not found"));
         }
     }
 
@@ -147,10 +154,30 @@ public class BookController {
            return "Can not delete";
     }
 
+    @GetMapping("/public/books/featured")
+    public List<BookDTO> getFeaturedBooks(){
+        List<Book> books = bookService.getFeaturedBooks();
+            return books.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
     private BookDTO convertToDto(Book book){
         BookDTO bookDTO = modelMapper.map(book, BookDTO.class);
         bookDTO.setCategory(book.getCategory().getName());
-        if(book.getAvgRating() == null){
+
+        if(book.getImage()!=null) {
+            String encodeString = Base64.getEncoder().encodeToString(book.getImage());
+            bookDTO.setImage(encodeString);
+        }
+        List<Rating> ratings = bookService.getAllRatingsOfABook(book.getId());
+        if(ratings !=null && ratings.size() != 0) {
+            Integer numRev = ratings.size();
+            bookDTO.setNumReviews(numRev);
+            log.info("book id" + book.getId() + "numRev" + numRev);
+            System.out.println(ratings);
+            bookDTO.setAvgRating(ratingService.calcAvgRating(book.getId()));
+        }
+        else{
+            bookDTO.setNumReviews(0);
             bookDTO.setAvgRating(0F);
         }
         return bookDTO;

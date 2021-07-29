@@ -12,4 +12,5 @@ public interface UserAccountService {
     public User getAccountById(Long id);
     public Set<User> getAllCustomer();
     public boolean deleteAnAccount(Long accId);
+    public User updateUserAccount(User user);
 }

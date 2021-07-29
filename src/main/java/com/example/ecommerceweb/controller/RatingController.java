@@ -10,6 +10,7 @@ import com.example.ecommerceweb.model.Rating;
 import com.example.ecommerceweb.service.BookService;
 import com.example.ecommerceweb.service.RatingService;
 import com.example.ecommerceweb.service.UserAccountService;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/bookstore")
+@Slf4j
 public class RatingController {
 
     @Autowired
@@ -37,6 +39,7 @@ public class RatingController {
 
     @PostMapping("/user/books/{bookId}/rating")
     public RatingDTO ratesABook(@Valid @PathVariable(value = "bookId") Long id, @RequestBody Rating rating){
+        log.error("rating"+id);
         return convertToDto(ratingService.addRating(id,rating));
     }
 

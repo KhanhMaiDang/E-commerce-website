@@ -2,12 +2,16 @@ package com.example.ecommerceweb.service.implement;
 
 import com.example.ecommerceweb.exception.UserAccountNotFoundException;
 import com.example.ecommerceweb.model.Book;
+import com.example.ecommerceweb.model.CustomUserDetail;
 import com.example.ecommerceweb.model.Role;
 import com.example.ecommerceweb.model.User;
 import com.example.ecommerceweb.repository.RoleRepository;
 import com.example.ecommerceweb.repository.UserRepository;
 import com.example.ecommerceweb.service.UserAccountService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.Access;
@@ -17,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class UserAccountServiceImpl implements UserAccountService {
     @Autowired
     UserRepository userRepository;
@@ -49,7 +54,9 @@ public class UserAccountServiceImpl implements UserAccountService {
     public boolean deleteAnAccount(Long accId) {
         Optional<User> tmpAcc = userRepository.findById(accId);
         if (tmpAcc.isPresent()) {
+            log.info("Acc id " + accId);
             User account = tmpAcc.get();
+            System.out.println(account);
             account.deleteAllRoles();
             userRepository.deleteById(accId);
             return true;
@@ -57,4 +64,17 @@ public class UserAccountServiceImpl implements UserAccountService {
             return false;
     }
 
+    @Override
+    public User updateUserAccount(User newUser) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetail customUserDetail = ((CustomUserDetail)auth.getPrincipal());
+        User currentUser = customUserDetail.getUser();
+
+        return userRepository.findById(currentUser.getId()).map(user -> {
+            user.setPassword(newUser.getPassword());
+            user.setName(newUser.getName());
+            user.setPhoneNumber(newUser.getPhoneNumber());
+            return userRepository.save(user);
+        }).orElseThrow(() -> new UserAccountNotFoundException(currentUser.getId()));
+    }
 }

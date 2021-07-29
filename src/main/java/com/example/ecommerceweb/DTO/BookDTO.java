@@ -39,12 +39,14 @@ public class BookDTO {
     @NotNull
     private Integer remaining;
 
-    //private String imageUrl;
+    private String image;
 
     private Date createdAt;
 
     private Date updatedAt;
 
     private Float avgRating;
+
+    private Integer numReviews;
 
 }

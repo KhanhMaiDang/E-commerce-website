@@ -36,6 +36,12 @@ public class BookServiceTest {
 
    @InjectMocks
     BookService bookService = new BookService() {
+
+       @Override
+       public List<Book> getFeaturedBooks() {
+           return null;
+       }
+
        @Override
        public Book saveABook(Long categoryId, Book book) {
            return null;

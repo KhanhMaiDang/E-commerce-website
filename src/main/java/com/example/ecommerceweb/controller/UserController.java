@@ -28,9 +28,10 @@ public class UserController {
 
 
     @GetMapping("admin/accounts")
-    public List<UserDTO> getAllAccounts(){
+    public List<User> getAllAccounts(){
         List<User> userList = userAccountService.getAllAccounts();
-        return userList.stream().map(this::convertToDto).collect(Collectors.toList());
+        //return userList.stream().map(this::convertToDto).collect(Collectors.toList());
+        return  userList;
     }
 
     @GetMapping("admin/customers")
@@ -46,7 +47,7 @@ public class UserController {
         return convertToDto(userAccountService.getAccountById(id));
     }
 
-    @DeleteMapping("admin/{accountId}/delete")
+    @DeleteMapping("/admin/accounts/{accountId}/delete")
     public ResponseEntity<String> deleteAnAccount(@Valid @PathVariable(value = "accountId") Long id){
         if(!userAccountService.deleteAnAccount(id)){
             throw new CanNotDeleteObjectException();

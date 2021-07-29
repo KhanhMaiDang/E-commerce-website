@@ -38,4 +38,6 @@ public class RatingDTO {
     @NotNull
     private Float star;
 
+    private String comment;
+
 }

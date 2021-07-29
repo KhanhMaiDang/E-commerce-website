@@ -12,9 +12,12 @@ import com.example.ecommerceweb.payload.response.MessageResponse;
 import com.example.ecommerceweb.repository.RoleRepository;
 import com.example.ecommerceweb.repository.UserRepository;
 import com.example.ecommerceweb.service.implement.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +33,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
+@Slf4j
 public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -47,34 +51,42 @@ public class AuthController {
     private JwtTokenProvider tokenProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest){
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws Exception {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwt = tokenProvider.generateToken((CustomUserDetail) authentication.getPrincipal());
+            String jwt = tokenProvider.generateToken((CustomUserDetail) authentication.getPrincipal());
 
-        CustomUserDetail userDetails = (CustomUserDetail) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-        User user = userDetails.getUser();
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                user.getId(),
-                user.getUsername(),
-                user.getPhoneNumber(),
-                roles));
+            CustomUserDetail userDetails = (CustomUserDetail) authentication.getPrincipal();
+            List<String> roles = userDetails.getAuthorities().stream()
+                    .map(item -> item.getAuthority())
+                    .collect(Collectors.toList());
+            User user = userDetails.getUser();
+            return ResponseEntity.ok(new JwtResponse(jwt,
+                    user.getId(),
+                    user.getUsername(),
+                    user.getName(),
+                    user.getPhoneNumber(),
+                    roles));
+        }catch (BadCredentialsException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("Invalid username or password"));
+        }
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest){
         if (userRepository.existsByUsername(signUpRequest.getUsername())){
-            ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
+            log.error("username exist");
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
         }
+        else
+            log.error("no catch");
 
         User user = new User(signUpRequest.getUsername(),signUpRequest.getName(), signUpRequest.getPhoneNumber(),
-                passwordEncoder.encode(signUpRequest.getPassword()));
+                passwordEncoder.encode(signUpRequest.getPassword()), signUpRequest.getEmail());
         Set<String> strRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
@@ -88,7 +100,7 @@ public class AuthController {
         }
         else{
             strRoles.forEach(role -> {
-                switch (role){
+                switch (role.toLowerCase()){
                     case "admin":
                         Role adminRole = roleRepository.findRoleByName("ADMIN");
                         if(adminRole==null)

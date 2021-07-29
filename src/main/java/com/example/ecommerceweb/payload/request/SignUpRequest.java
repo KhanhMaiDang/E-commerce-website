@@ -22,6 +22,8 @@ public class SignUpRequest {
 
     private Long phoneNumber;
 
+    private String email;
+
     private Set<String> role;
 
 }

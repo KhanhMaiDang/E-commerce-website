@@ -22,6 +22,7 @@ public class User {
     private String password;
     private String name;
     private Long phoneNumber;
+    private String email;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
@@ -36,11 +37,12 @@ public class User {
     public void addRole(Role role) {
         roles.add(role);
     }
-    public User(String username, String name, Long phoneNumber, String password) {
+    public User(String username, String name, Long phoneNumber, String password, String email) {
         this.username = username;
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.password = password;
+        this.email = email;
     }
 
     public User(){
@@ -48,9 +50,11 @@ public class User {
     }
 
     public void deleteAllRoles(){
-        for (Role r: roles){
-            roles.remove(r);
-        }
+       // System.out.println(roles);
+//        for (Role r: roles){
+//            roles.remove(r);
+//        }
+        roles=null;
     }
 
 }

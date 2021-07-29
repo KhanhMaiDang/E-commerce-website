@@ -28,4 +28,5 @@ public class Rating extends AuditModel{
     @Max(value = 5)
     private Float star;
 
+    private String comment;
 }

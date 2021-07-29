@@ -14,4 +14,5 @@ public interface RatingService {
     public Rating getRatingById(Long id);
     public Rating updateARating(Long id, Rating newRating);
     public boolean deleteARating(Long id);
+    public Float calcAvgRating(Long bookId);
 }

@@ -27,5 +27,6 @@ public interface BookService {
     //public List<Rating> getAllRatingOfABook(Long bookId);
     public Book updateAvgRating(Long bookId, Float avgRating);
     public List<Rating> getAllRatingsOfABook(Long bookId);
+    public List<Book> getFeaturedBooks();
 
 }
